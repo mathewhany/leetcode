@@ -12,17 +12,14 @@ class Solution:
             nonlocal best
 
             if not current:
-                return 0, 0
+                return 0
 
-            leftSplit, leftNoSplit = dfs(current.left)
-            rightSplit, rightNoSplit = dfs(current.right)
+            leftMax = max(dfs(current.left), 0)
+            rightMax = max(dfs(current.right), 0)
 
-            split = current.val + max(leftNoSplit, 0) + max(rightNoSplit, 0)
-            noSplit = current.val + max(leftNoSplit, rightNoSplit)
+            best = max(best, current.val + leftMax + rightMax)
 
-            best = max(best, split, noSplit)
-
-            return max(split, 0), max(noSplit, 0)
+            return current.val + max(leftMax, rightMax)
 
         dfs(root)
 
