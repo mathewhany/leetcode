@@ -1,5 +1,5 @@
 class TrieNode:
-    def __init__(self, isWord = False):
+    def __init__(self, parent = None, isWord = False):
         self.isWord = isWord 
         self.children = {}
 
@@ -17,6 +17,20 @@ class Trie:
                 current = current.children[letter]
         current.isWord = True
 
+    def deleteWord(self, word):
+        current = self.root
+        stack = [current]
+        for letter in word:
+            current = current.children[letter]
+            stack.append(current)
+        stack[-1].isWord = False
+        if stack[-1].children:
+            return
+        for letter in reversed(word):
+            node = stack.pop()
+            if not node.children:
+                stack[-1].children.pop(letter)
+
 class Solution:
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
         trie = Trie()
@@ -24,7 +38,7 @@ class Solution:
             trie.add(word)
         
         ROWS, COLS = len(board), len(board[0])
-        output = set()
+        output = []
 
         def dfs(row, col, trieNode, word = ''):
             if not (0 <= row < ROWS and 0 <= col < COLS):
@@ -37,7 +51,8 @@ class Solution:
             trieNode = trieNode.children[letter]
             word += letter
             if trieNode.isWord:
-                output.add(word)
+                output.append(word)
+                trie.deleteWord(word)
             dfs(row + 1, col, trieNode, word)
             dfs(row - 1, col, trieNode, word)
             dfs(row, col + 1, trieNode, word)
@@ -49,4 +64,4 @@ class Solution:
             for col in range(COLS):
                 dfs(row, col, trie.root)
         
-        return list(output)
+        return output
