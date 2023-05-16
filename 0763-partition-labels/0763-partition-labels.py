@@ -1,15 +1,15 @@
 class Solution:
     def partitionLabels(self, s: str) -> List[int]:
-        letterLastOccurence = {}
+        lastIndex = {}
         for i, l in enumerate(s):
-            letterLastOccurence[l] = i
+            lastIndex[l] = i
         
         counts = []
         start, end = 0, 0
         for i, l in enumerate(s):
-            if i > end:
+            end = max(end, lastIndex[l])
+            if i == end:
                 counts.append(end - start + 1)
-                start, end = i, i
-            end = max(end, letterLastOccurence[l])
-        counts.append(end - start + 1)
+                start, end = i + 1, i + 1
+
         return counts
