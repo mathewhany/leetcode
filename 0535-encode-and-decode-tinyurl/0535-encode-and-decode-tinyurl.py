@@ -8,7 +8,7 @@ class Codec:
 
     def encode(self, longUrl: str) -> str:
         while True:
-            shortUrl = self.baseUrl + ''.join(random.choice(self.alphabet) for _ in range(10))
+            shortUrl = self.baseUrl + ''.join(random.choice(self.alphabet) for _ in range(6))
             if shortUrl not in self.decodeMap:
                 self.decodeMap[shortUrl] = longUrl
                 return shortUrl
