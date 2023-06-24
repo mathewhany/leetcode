@@ -7,16 +7,11 @@ class Codec:
         self.nextId = 0
 
     def encode(self, longUrl: str) -> str:
-        base = len(self.alphabet)
-        encoded = ''
-        currentId = self.nextId
-        self.nextId += 1
-        while currentId > 0:
-            encoded = alphabet[current % base] + encoded
-            currentId = currentId // base
-        shortUrl = self.baseUrl + (encoded if len(encoded) > 0 else '0')
-        self.decodeMap[shortUrl] = longUrl
-        return shortUrl
+        while True:
+            shortUrl = self.baseUrl + ''.join(random.choice(self.alphabet) for _ in range(10))
+            if shortUrl not in self.decodeMap:
+                self.decodeMap[shortUrl] = longUrl
+                return shortUrl
 
     def decode(self, shortUrl: str) -> str:
         return self.decodeMap[shortUrl]
