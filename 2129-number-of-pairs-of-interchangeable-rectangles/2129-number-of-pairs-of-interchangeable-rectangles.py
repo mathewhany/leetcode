@@ -9,6 +9,6 @@ class Solution:
         for group in groups:
             n = groups[group]
             if n > 1:
-                ans += n * (n - 1) / 2
+                ans += n * (n - 1) // 2
         
-        return int(ans)
+        return ans
