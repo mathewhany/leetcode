@@ -1,17 +1,13 @@
 class Solution:
     def findRepeatedDnaSequences(self, s: str) -> List[str]:
-        counts = defaultdict(int)
-        window = []
-        ans = []
+        seen = set()
+        ans = set()
 
-        for c in s:
-            window.append(c)
+        for i in range(len(s) - 10 + 1):
+            key = s[i:i + 10]
+            if key in seen:
+                ans.add(key)
+            else:
+                seen.add(key)
 
-            if len(window) > 10:
-                window.pop(0)
-            
-            key = ''.join(window)
-            counts[key] += 1
-            if counts[key] == 2: ans.append(key)
-        
-        return ans
+        return list(ans)
