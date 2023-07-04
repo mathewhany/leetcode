@@ -1,19 +1,20 @@
 class FreqStack:
 
     def __init__(self):
+        self.stacks = defaultdict(list)
         self.freq = defaultdict(int)
-        self.heap = []
-        self.t = 0
+        self.maxFreq = 0
         
 
     def push(self, val: int) -> None:
         self.freq[val] += 1
-        heappush(self.heap, (-self.freq[val], -self.t, val))
-        self.t += 1
+        self.maxFreq = max(self.maxFreq, self.freq[val])
+        self.stacks[self.freq[val]].append(val)
 
     def pop(self) -> int:
-        _, _, val = heappop(self.heap)
+        val = self.stacks[self.maxFreq].pop()
         self.freq[val] -= 1
+        if not self.stacks[self.maxFreq]: self.maxFreq -= 1
         return val
 
 
