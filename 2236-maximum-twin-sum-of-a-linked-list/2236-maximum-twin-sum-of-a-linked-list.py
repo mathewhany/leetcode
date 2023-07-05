@@ -5,15 +5,20 @@
 #         self.next = next
 class Solution:
     def pairSum(self, head: Optional[ListNode]) -> int:
-        pre, cur = None, head
-        while cur:
-            pre = ListNode(cur.val, pre)
-            cur = cur.next
+        fast, slow = head, head
+        pre = None
+        while fast and fast.next:
+            fast = fast.next.next
+            tmp = slow.next
+            slow.next = pre
+            pre = slow
+            slow = tmp
         
-        cur1, cur2= head, pre
-        best = -inf
+        cur1, cur2 = pre, slow
+        best = 0
         while cur1 and cur2:
             best = max(best, cur1.val + cur2.val)
             cur1 = cur1.next
             cur2 = cur2.next
+        
         return best
