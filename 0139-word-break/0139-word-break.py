@@ -9,7 +9,7 @@ class Solution:
 
             for i in range(1, len(target)):
                 prefix, suffix = target[:i], target[i:]
-                if prefix in wordSet and (suffix in wordSet or dp(suffix)): 
+                if prefix in wordSet and dp(suffix): 
                     memo[target] = True
                     return True
             memo[target] = False
