@@ -1,18 +1,15 @@
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
         wordSet = set(wordDict)
-        memo = {}
+        dp = [False] * (len(s) + 1)
+        dp[0] = True
 
-        def dp(target):
-            if target in wordSet: return True
-            if target in memo: return memo[target]
-
-            for i in range(1, len(target)):
-                prefix, suffix = target[:i], target[i:]
-                if prefix in wordSet and dp(suffix): 
-                    memo[target] = True
+        for i in range(len(s)):
+            if not dp[i]: continue
+            for j in range(i + 1, len(s) + 1):
+                if s[i:j] in wordSet:
+                    dp[j] = True
+                if dp[len(s)]:
                     return True
-            memo[target] = False
-            return False
 
-        return dp(s)
+        return False
