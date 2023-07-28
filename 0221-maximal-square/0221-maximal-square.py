@@ -11,8 +11,6 @@ class Solution:
                     left = dp[i][j - 1] if j - 1 >= 0 else 0
                     topleft = dp[i - 1][j - 1] if i - 1 >= 0 and j - 1 >= 0 else 0
 
-
-                    area = top
                     sideLen = min(
                         sqrt(top),
                         sqrt(left),
