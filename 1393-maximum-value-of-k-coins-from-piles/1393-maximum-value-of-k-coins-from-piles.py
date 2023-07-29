@@ -4,12 +4,9 @@ class Solution:
 
         for i in range(len(piles) - 1, -1, -1):
             for needed in range(k, -1, -1):
-                ans = dp[needed]
                 currentSum = 0
-                for taken in range(needed):
-                    if taken >= len(piles[i]): break
+                for taken in range(min(needed, len(piles[i]))):
                     currentSum += piles[i][taken]
-                    ans = max(ans, currentSum + dp[needed - taken - 1])
-                dp[needed] = ans
+                    dp[needed] = max(dp[needed], currentSum + dp[needed - taken - 1])
 
         return dp[k]
