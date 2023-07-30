@@ -4,29 +4,20 @@ class Solution:
         prefixSum = [0]
         for s in stones: prefixSum.append(s + prefixSum[-1])
         
-        memo = {}
+        dp = [[[inf for _ in range(k + 1)] for _ in range(len(stones))] for _ in range(len(stones))]
 
-        def dp(i, j, piles):
-            if (i, j, piles) in memo: return memo[(i, j, piles)]
+        for i in range(len(stones) - 1, -1, -1):
+            for j in range(i, len(stones)):
+                for piles in range(k, 0, -1):
+                    if i == j:
+                        dp[i][j][piles] = 0 if piles == 1 else inf
+                    elif piles == 1:
+                        dp[i][j][piles] = dp[i][j][k] + prefixSum[j + 1] - prefixSum[i]
+                    else:
+                        dp[i][j][piles] = min(
+                            dp[i][mid][1] + dp[mid + 1][j][piles - 1] for mid in range(i, j)
+                        )
 
-            if i == j: 
-                return 0 if piles == 1 else inf
-
-            if piles == 1:
-                ans = dp(i, j, k) + prefixSum[j + 1] - prefixSum[i]
-            else:
-                ans = inf
-
-                for mid in range(i, j):
-                    ans = min(
-                        ans, 
-                        dp(i, mid, 1) + dp(mid + 1, j, piles - 1)
-                    )
-
-            memo[(i, j, piles)] = ans
-            
-            return ans
-
-        ans = dp(0, len(stones) - 1, 1)
+        ans = dp[0][len(stones) - 1][1]
 
         return ans if ans != inf else -1
