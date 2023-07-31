@@ -1,24 +1,16 @@
 class Solution:
     def jump(self, nums: List[int]) -> int:
-        memo = {}
+        queue = deque([(0, nums[0], 0)])
 
-        def dp(i):
-            if i in memo: return memo[i]
+        while queue:
+            current, jumpLen, jumps = queue.popleft()
 
-            if i >= len(nums) - 1:
-                return 0
-
-            ans = inf
+            if current == len(nums) - 1:
+                return jumps
             
-            for j in range(i + 1, i + nums[i] + 1):
-                ans = min(
-                    1 + dp(j),
-                    ans
-                )
-
-            memo[i] = ans
-            
-            return ans
+            for j in range(current + 1, min(len(nums), current + jumpLen + 1)):
+                if nums[j] >= 0:
+                    queue.append((j, nums[j], jumps + 1))
+                    nums[j] = -1
         
-        return dp(0)
-        
+        return -1
