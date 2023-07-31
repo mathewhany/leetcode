@@ -1,16 +1,24 @@
 class Solution:
     def jump(self, nums: List[int]) -> int:
-        minJumps = 0
-        maxSoFar = 0
-        nextMax = 0
+        memo = {}
 
-        for i, n in enumerate(nums):
-            if maxSoFar >= len(nums) - 1:
-                break
+        def dp(i):
+            if i in memo: return memo[i]
 
-            nextMax = max(nextMax, min(i + n, len(nums) - 1))
-            if i == maxSoFar:
-                maxSoFar = nextMax
-                minJumps += 1
+            if i >= len(nums) - 1:
+                return 0
+
+            ans = inf
+            
+            for j in range(i + 1, i + nums[i] + 1):
+                ans = min(
+                    1 + dp(j),
+                    ans
+                )
+
+            memo[i] = ans
+            
+            return ans
         
-        return minJumps
+        return dp(0)
+        
