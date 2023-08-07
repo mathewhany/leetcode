@@ -6,12 +6,9 @@ public:
         unordered_set<string> setST;
 
         for (int i = 0; i < s.size(); i++) {
-            string key;
-            key += s[i];
-            key += ",";
-            key += t[i];
+            ;
 
-            setST.insert(key);    
+            setST.insert(string { s[i], ',', t[i] });    
         }
 
         return setS.size() == setT.size() && setT.size() == setST.size();
