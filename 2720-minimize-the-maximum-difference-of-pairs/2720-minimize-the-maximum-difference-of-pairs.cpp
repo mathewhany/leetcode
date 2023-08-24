@@ -2,14 +2,14 @@ class Solution {
 public:
     int minimizeMax(vector<int>& nums, int p) {
         sort(nums.begin(), nums.end());
-
+        int N = nums.size();
         int lo = 0;
-        int hi = 1e9;
+        int hi = nums[N - 1] - nums[0];
         int ans = -1;
 
         function<bool(int)> ok = [&](int thresh) {
             int count = 0;
-            for (int i = 0; i < nums.size() - 1; i++) {
+            for (int i = 0; i < nums.size() - 1 && count < p; i++) {
                 if (nums[i + 1] - nums[i] <= thresh) {
                     count++;
                     i++;
