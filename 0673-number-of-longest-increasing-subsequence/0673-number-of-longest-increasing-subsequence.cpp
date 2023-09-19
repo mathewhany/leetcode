@@ -1,3 +1,28 @@
+class MaxElement {
+public:
+        MaxElement() : maxElement(0), maxElementCnt(1) {}
+
+        void add(int element, int count) {
+            if (element > maxElement) {
+                maxElement = element;
+                maxElementCnt = count;
+            } else if (element == maxElement) {
+                maxElementCnt += count;
+            }
+        }
+
+        int getMax() {
+            return maxElement;
+        }
+
+        int getCount() { 
+            return maxElementCnt; 
+        }
+private:
+        int maxElement;
+        int maxElementCnt;
+};
+
 class Solution {
 public:
     int findNumberOfLIS(vector<int>& nums) {
@@ -5,36 +30,23 @@ public:
         vector<int> length(n, 0), cnt(n, 0);
 
         for (int i = 0; i < n; i++) {
-            int maxLength = 0;
-            int maxLengthCnt = 1;
+            MaxElement me;
 
             for (int j = i - 1; j >= 0; j--) {
                 if (nums[j] < nums[i]) {
-                    if (length[j] > maxLength) {
-                        maxLength = length[j];
-                        maxLengthCnt = cnt[j];
-                    } else if (length[j] == maxLength) {
-                        maxLengthCnt += cnt[j];
-                    }
+                    me.add(length[j], cnt[j]);
                 }
             }
 
-            length[i] = maxLength + 1;
-            cnt[i] = maxLengthCnt;
+            length[i] = me.getMax() + 1;
+            cnt[i] = me.getCount();
         }
 
-        int maxLen = 0;
-        int maxLenCnt = 1;
-
+        MaxElement me;
         for (int i = 0; i < n; i++) {
-            if (length[i] == maxLen) {
-                maxLenCnt += cnt[i];
-            } else if (length[i] > maxLen) {
-                maxLen = length[i];
-                maxLenCnt = cnt[i];
-            }
+            me.add(length[i], cnt[i]);
         }
         
-        return maxLenCnt;
+        return me.getCount();
     }
 };
