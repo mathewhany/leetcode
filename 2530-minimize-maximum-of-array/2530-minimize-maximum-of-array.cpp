@@ -7,7 +7,7 @@ public:
         for (int i = 0; i < nums.size(); i++) {
             int count = i + 1;
             sum += nums[i];
-            ans = max(ans, int((sum + i) / (i + 1)));
+            ans = max(ans, int(ceil((sum * 1.0) / count)));
         }
 
         return ans;
