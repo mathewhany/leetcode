@@ -1,23 +1,35 @@
 class Solution {
 public:
     vector<int> findClosestElements(vector<int>& arr, int k, int x) {
-        int start = 0;
-        int end = k - 1;
-        
-        for (int i = k; i < arr.size(); i++) {
-            if (closer(arr[i - k], arr[i], x)) break;
+        int lo = 0;
+        int hi = arr.size() - k;
+        int ans = 0;
 
-            start++;
-            end++;
+        function<bool(int)> ok = [&] (int mid) {
+            if (mid + k >= arr.size()) return false;
+            
+            if (x >= arr[mid + k]) return true;
+
+            if (x <= arr[mid]) return false;
+
+            return arr[mid + k] - x  < x - arr[mid];
+        };
+
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (ok(mid)) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+                ans = mid;
+            }
         }
 
-        vector<int> ans;
-        for (int i = start; i <= end; i++) ans.push_back(arr[i]);
+        vector<int> ansVec;
+        for (int i = 0; i < k; i++) {
+            ansVec.push_back(arr[ans + i]);
+        }
 
-        return ans;
-    }
-private:
-    bool closer(int a, int b, int x) {
-        return (abs(a - x) < abs(b - x) || abs(a - x) == abs(b - x) && a < b);
+        return ansVec;
     }
 };
