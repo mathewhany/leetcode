@@ -2,26 +2,21 @@ class Solution {
 public:
     int minimizeMax(vector<int>& nums, int p) {
         sort(nums.begin(), nums.end());
-        int N = nums.size();
-        int lo = 0;
-        int hi = nums[N - 1] - nums[0];
-        int ans = -1;
+        int lo = 0, hi = nums[nums.size() - 1];
+        int ans;
 
-        function<bool(int)> ok = [&](int thresh) {
-            int count = 0;
-            for (int i = 0; i < nums.size() - 1 && count < p; i++) {
-                if (nums[i + 1] - nums[i] <= thresh) {
-                    count++;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;            
+            int pairCount = 0;
+
+            for (int i = 1; i < nums.size(); i++) {
+                if (nums[i] - nums[i - 1] <= mid ) {
+                    pairCount++;
                     i++;
                 }
             }
-            return count >= p;
-        };
 
-        while (lo <= hi) {
-            int mid = lo + (hi - lo) / 2;
-
-            if (ok(mid)) {
+            if (pairCount >= p) {
                 hi = mid - 1;
                 ans = mid;
             } else {
