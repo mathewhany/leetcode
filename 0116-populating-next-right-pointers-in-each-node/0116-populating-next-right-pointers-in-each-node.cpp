@@ -19,21 +19,22 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        if (!root || !root->left) return root;
+        Node* node = root;
+        Node* nextLevel = root ? root->left : NULL;
 
-        Node* cur = root;
-        Node* next = root->left;
-
-        while (next) {
-            while (cur) {
-                cur->left->next = cur->right;
-                if (cur->next) {
-                    cur->right->next = cur->next->left;
-                }
-                cur = cur->next;
+        while (node) {
+            if (node->left) {
+                node->left->next = node->right;
             }
-            cur = next;
-            next = next->left;
+            if (node->right) {
+                node->right->next = node->next ? node->next->left : NULL;
+            }
+            node = node->next;
+
+            if (!node) {
+                node = nextLevel;
+                nextLevel = nextLevel ? nextLevel->left : NULL;
+            }
         }
 
         return root;
