@@ -1,28 +1,36 @@
 class Solution {
 public:
     bool makesquare(vector<int>& matchsticks) {
-        sort(matchsticks.begin(), matchsticks.end(), greater<>());
-        int sum = accumulate(matchsticks.begin(), matchsticks.end(), 0);
+        sort(matchsticks.begin(), matchsticks.end(), less<int>());
+        int n = matchsticks.size();
+        int sum = 0;
+        for (int i = 0; i < n; i++) sum += matchsticks[i];
         if (sum % 4) return false;
-        int target = sum / 4;
-        vector<int> sides = {0, 0, 0, 0};
+        int sideLen = sum / 4;
 
-        function<bool(int)> backtrack = [&](int i) {
-            if (i >= matchsticks.size()) {
-                return true;
+        vector<int> sides(4, 0);
+
+        function<bool(int, int)> backtrack = [&] (int i, int j) {
+            if (i >= n) {                if (j >= 4) return true;
+                if (sides[j] < sideLen) return false;
+                return backtrack(0, j + 1);
             }
 
-            for (int j = 0; j < 4; j++) {
-                if (sides[j] + matchsticks[i] > target) continue;
+            if (backtrack(i + 1, j)) return true;
 
-                sides[j] += matchsticks[i];
-                if (backtrack(i + 1)) return true;
-                sides[j] -= matchsticks[i];
+
+            if (matchsticks[i] > 0 && matchsticks[i] + sides[j] <= sideLen) {
+                int stick = matchsticks[i];
+                sides[j] += stick;
+                matchsticks[i] = 0;
+                if (backtrack(i + 1, j)) return true;
+                matchsticks[i] = stick;
+                sides[j] -= stick;
             }
 
             return false;
         };
 
-        return backtrack(0);
+        return backtrack(0, 0);
     }
 };
