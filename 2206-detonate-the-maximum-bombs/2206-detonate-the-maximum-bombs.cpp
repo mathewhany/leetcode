@@ -1,54 +1,49 @@
 class Solution {
 public:
     int maximumDetonation(vector<vector<int>>& bombs) {
-        int n = bombs.size();
-        unordered_map<int, vector<int>> detonationMap;
+        vector<vector<int>> graph(bombs.size());
+        for (int i = 0; i < bombs.size(); i++) {
+            for (int j = i + 1; j < bombs.size(); j++) {
+                int x1 = bombs[i][0];
+                int x2 = bombs[j][0];
+                int y1 = bombs[i][1];
+                int y2 = bombs[j][1];
+                long r1 = bombs[i][2];
+                long r2 = bombs[j][2];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                int bomb1X = bombs[i][0];
-                int bomb1Y = bombs[i][1];
-                long bomb1R = bombs[i][2];
-                int bomb2X = bombs[j][0];
-                int bomb2Y = bombs[j][1];
-                long bomb2R = bombs[j][2];
+                long dx = x1 - x2;
+                long dy = y1 - y2;
 
-                long dx = bomb1X - bomb2X;
-                long dy = bomb1Y - bomb2Y;
+                long d_sq = dx * dx + dy * dy;
 
-                long d = dx * dx + dy * dy;
-
-                if (bomb1R * bomb1R >= d) {
-                    detonationMap[i].push_back(j);
+                if (d_sq <= r1 * r1) {
+                    graph[i].push_back(j);
                 }
-
-                if (bomb2R * bomb2R >= d) {
-                    detonationMap[j].push_back(i);
+                if (d_sq <= r2 * r2) {
+                    graph[j].push_back(i);
                 }
             }
         }
 
-        long ans = INT_MIN;
-
-        for (int i = 0; i < n; i++) {
-            vector<bool> visited(n, false);
-            ans = max(ans, dfs(detonationMap, i, visited));
+        int ans = 0;
+        for (int i = 0; i < bombs.size(); i++) {
+            vector<bool> inPath(bombs.size());
+            ans = max(dfs(i, inPath, graph), ans);
         }
 
         return ans;
     }
 
-    long dfs(unordered_map<int, vector<int>>& detonationMap, int i, vector<bool>& visited) {
-        if (visited[i]) return 0;
+    int dfs(int i, vector<bool>& inPath, vector<vector<int>>& graph) {
+        if (inPath[i]) return 0;
 
-        visited[i] = true;
+        inPath[i] = true;
 
-        long count = 1;
-        
-        for (auto const& nextBomb : detonationMap[i]) {
-            count += dfs(detonationMap, nextBomb, visited);
+        int count = 1;
+        for (const auto &j : graph[i]) {
+            count += dfs(j, inPath, graph);
         }
-        
+
         return count;
-    }
+    };
 };
