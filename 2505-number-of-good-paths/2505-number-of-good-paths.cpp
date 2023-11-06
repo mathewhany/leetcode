@@ -16,6 +16,8 @@ public:
 
   void unionRoots(int node1, int node2) {
     int root1 = findRoot(node1), root2 = findRoot(node2);
+    if (root1 == root2) return;
+    
     int rank1 = rank[root1], rank2 = rank[root2];
 
     if (rank1 == rank2) {
@@ -54,28 +56,18 @@ public:
       long ans = n;
 
       for (auto const &[val, nodes] : valToNodes) {
-        unordered_map<int, int> rootToValCount;
-        for (auto const &node : nodes) {
-          rootToValCount[uf.findRoot(node)] = 1;
-        }
         for (auto const &node : nodes) {
           for (auto const& neighbor : nodeToNeighbors[node]) {
             if (vals[neighbor] <= vals[node]) {
-              int neighborRoot = uf.findRoot(neighbor);
-              int nodeRoot = uf.findRoot(node);
-              if (neighborRoot == nodeRoot) continue;
-              int neighborCount = rootToValCount[neighborRoot];
-              int nodeCount = rootToValCount[nodeRoot];
               uf.unionRoots(node, neighbor);
-              int newRoot = uf.findRoot(node);
-              rootToValCount.erase(neighborRoot);
-              rootToValCount.erase(nodeRoot);
-              rootToValCount[newRoot] += neighborCount + nodeCount;
             }
           }
         }
-        for (auto const &[root, valCount] : rootToValCount) {
-          ans += ((valCount - 1) * valCount) / 2;
+        unordered_map<int, int> rootToValCount;
+        for (auto const &node : nodes) {
+          int root = uf.findRoot(node);
+          ans += rootToValCount[root];
+          rootToValCount[root]++;
         }
       }
 
