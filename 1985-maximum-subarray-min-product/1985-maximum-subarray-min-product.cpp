@@ -1,35 +1,27 @@
 class Solution {
 public:
     int maxSumMinProduct(vector<int>& nums) {
-        int n = nums.size();
-        stack<pair<int, long>> s;
+        stack<pair<int, long>> st;
+        long best = 0;
 
-        long ans = 0;
-
-        for (int i = 0; i < n; i++) {
-            int num = nums[i];
+        for (int i = 0; i < nums.size(); i++) {
             long sum = 0;
-            while (s.size() && s.top().first >= num) {
-                ans = max(
-                    ans,
-                    (sum + s.top().second) * s.top().first
-                );
-                sum += s.top().second;
-                s.pop();
+            while (st.size() && st.top().first >= nums[i]) {
+                auto &[min, subSum] = st.top(); st.pop();
+                sum += subSum;
+                best = max(best, min * sum);
             }
-            sum += num;
-            s.push(make_pair(num, sum));
-        }
-        long sum = 0;
-        while (s.size()) {
-            sum += s.top().second;
-            ans = max(
-                sum * s.top().first,
-                ans
-            );
-            s.pop();
+            sum += nums[i];
+            st.push(make_pair(nums[i], sum));
         }
 
-        return ans % int(1e9 + 7);
+        long sum = 0;
+        while (st.size()) {
+            auto &[min, subSum] = st.top(); st.pop();
+            sum += subSum;
+            best = max(best, min * sum);
+        }
+
+        return best % int(1e9 + 7);
     }
 };
