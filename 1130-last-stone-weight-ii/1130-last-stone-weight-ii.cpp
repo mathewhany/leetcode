@@ -1,33 +1,27 @@
 class Solution {
 public:
     int lastStoneWeightII(vector<int>& stones) {
-        int sum = 0;
-        for (const auto &s : stones) sum += s;
+        int sum = accumulate(stones.begin(), stones.end(), 0);
+        int target = sum / 2;
 
-        vector<vector<int>> memo(sum / 2 + 1, vector<int>(stones.size() + 1, 0));
-        vector<vector<bool>> visited(sum / 2 + 1, vector<bool>(stones.size() + 1, false));
-        
-        return sum - 2 * dp(stones, sum / 2, 0, 0, memo, visited);
+        vector<vector<long>> memo(stones.size() + 1, vector<long>(sum + 1, -1));
+
+        long ans = dp(stones, 0, 0, target, memo);
+
+        return sum - 2 * ans;
     }
 
-private:
-    int dp(vector<int>& stones, int bound, int sum, int i, vector<vector<int>>& memo, vector<vector<bool>>& visited) {
-        if (visited[sum][i]) return memo[sum][i];
+    int dp(vector<int>& stones, int i, long current, int target, vector<vector<long>>& memo) {
+        if (memo[i][current] != -1) return memo[i][current];
 
-        if (i >= stones.size()) return sum;
+        if (i >= stones.size()) return current;
 
-        visited[sum][i] = true;
+        long without = dp(stones, i + 1, current, target, memo);
+        long with = current + stones[i] <= target ? dp(stones, i + 1, current + stones[i], target, memo) : 0;
 
-        if (stones[i] + sum > bound) {
-            memo[sum][i] = dp(stones, bound, sum, i + 1, memo, visited);
-            return memo[sum][i];
-        }
+        long ans = max(without, with);
+        memo[i][current] = ans;
 
-        memo[sum][i] = max(
-            dp(stones, bound, sum + stones[i], i + 1, memo, visited),
-            dp(stones, bound, sum, i + 1, memo, visited)
-        );
-
-        return memo[sum][i];
+        return ans;
     }
 };
