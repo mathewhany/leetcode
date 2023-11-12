@@ -1,4 +1,5 @@
 class SummaryRanges {
+    set<int> nums;
 public:
     SummaryRanges() {
         
@@ -9,28 +10,39 @@ public:
     }
     
     vector<vector<int>> getIntervals() {
-        vector<vector<int>> intervals;
-        if (nums.size() == 0) return intervals;
+        vector<vector<int>> ans;
+        int start = -1, end = -1;
+        bool isFirst = true;
 
-        int start = *nums.begin();
-        int end = *nums.begin();
-
-        for (auto it = ++nums.begin(); it != nums.end(); it++) {
-            int val = *it;
-            if (val == end + 1) {
-                end++;
-            } else {
-                intervals.push_back({ start, end });
-                start = end = val;
+        for (const auto &num : nums) {
+            if (isFirst) {
+                start = end = num;
+                isFirst = false;
+                continue;
             }
-        }
-        
-        intervals.push_back({ start, end });
 
-        return intervals;
+            if (end + 1 == num) {
+                end = num;
+                continue;
+            }
+
+            vector<int> interval;
+            interval.push_back(start);
+            interval.push_back(end);
+            ans.push_back(interval);
+
+            start = end = num;
+        }
+
+        if (!isFirst) {
+            vector<int> interval;
+            interval.push_back(start);
+            interval.push_back(end);
+            ans.push_back(interval);
+        }
+
+        return ans;
     }
-private:
-    set<int> nums;
 };
 
 /**
