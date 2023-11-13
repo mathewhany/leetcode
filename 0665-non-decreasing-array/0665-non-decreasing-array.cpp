@@ -1,20 +1,30 @@
 class Solution {
 public:
     bool checkPossibility(vector<int>& nums) {
-        int prev = INT_MIN;
-        bool used = false;
-        for (int i = 0; i < nums.size() - 1; i++) {
-            if (nums[i] > nums[i + 1]) {
-                if (used) return false;
+        if (nums.size() <= 2) return true;
 
-                if (prev > nums[i + 1]) {
-                    nums[i + 1] = nums[i];
-                } else {
-                    nums[i] = prev;
-                }
-                used = true;   
+        bool used = false;
+
+        for (int i = 0; i < nums.size() - 2; i++) {
+            bool inv1 = nums[i] <= nums[i + 1];
+            bool inv2 = nums[i + 1] <= nums[i + 2];
+            bool inv3 = nums[i] <= nums[i + 2];
+
+            if (inv1 && inv2 && inv3) continue;
+
+            if (!inv1 && !inv2 && !inv3) return false;
+
+            if (used) return false;
+
+            if (inv3) {
+                nums[i + 1] = nums[i];
+                used = true;
+            } else if (inv1) {
+                nums[i + 2] = nums[i + 1];
+                used = true;
+            } else {
+                used = true;
             }
-            prev = nums[i];
         }
 
         return true;
